@@ -10,6 +10,7 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
+  const forceDarkText = location.pathname.startsWith('/admin') || location.pathname.startsWith('/login');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +34,6 @@ const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Projects', path: '/projects' },
-    { name: 'Research', path: '/research' },
     { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -47,35 +47,46 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled 
+      (scrolled || forceDarkText) 
         ? 'glass shadow-md py-3' 
         : 'bg-transparent py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-            <Database size={26} className="fill-blue-600/10" />
-            <span className="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
+          <Link to="/" className={`flex items-center gap-2 transition-colors duration-200 ${
+            (scrolled || forceDarkText) ? 'text-blue-600 dark:text-blue-400' : 'text-white'
+          }`}>
+            <Database size={26} className={(scrolled || forceDarkText) ? 'fill-blue-600/10' : 'fill-white/10'} />
+            <span className={`font-display font-extrabold text-xl tracking-tight transition-colors duration-200 ${
+              (scrolled || forceDarkText) ? 'text-slate-900 dark:text-white' : 'text-white'
+            }`}>
               Ahmed Mahamud Ahmed
             </span>
           </Link>
 
           {/* Desktop Nav Links */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(link.path)
-                    ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-950/20'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-slate-100/50 dark:hover:bg-dark-900/50'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    active
+                      ? (scrolled || forceDarkText)
+                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-950/20'
+                        : 'text-white bg-white/20'
+                      : (scrolled || forceDarkText)
+                        ? 'text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-slate-100/50 dark:hover:bg-dark-900/50'
+                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Action Buttons */}
@@ -83,7 +94,11 @@ const Navbar = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-900 transition-colors"
+              className={`p-2 rounded-lg transition-colors ${
+                (scrolled || forceDarkText)
+                  ? 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-900'
+                  : 'text-white hover:bg-white/10'
+              }`}
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -101,7 +116,11 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-900 text-sm font-semibold transition-colors"
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  (scrolled || forceDarkText)
+                    ? 'border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-900'
+                    : 'border border-white/80 text-white hover:bg-white/10'
+                }`}
               >
                 <LogIn size={16} />
                 Portal
@@ -114,7 +133,11 @@ const Navbar = () => {
             {/* Theme Toggle Mobile */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-900 transition-colors"
+              className={`p-2 rounded-lg transition-colors ${
+                (scrolled || forceDarkText)
+                  ? 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-900'
+                  : 'text-white hover:bg-white/10'
+              }`}
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -122,7 +145,11 @@ const Navbar = () => {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-900 transition-colors"
+              className={`p-2 rounded-lg transition-colors ${
+                (scrolled || forceDarkText)
+                  ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-900'
+                  : 'text-white hover:bg-white/10'
+              }`}
               aria-label="Toggle menu"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}

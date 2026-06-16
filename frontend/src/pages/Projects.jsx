@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ExternalLink, BookOpen, X, Code, Server, Info } from 'lucide-react';
+import { Search, ExternalLink, BookOpen, X, Code, Server, Info, Calendar, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 import { Github } from '../components/SocialIcons';
 import api from '../services/api';
 
@@ -9,6 +9,9 @@ const Projects = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedYear, setSelectedYear] = useState('all');
+  const [sortOrder, setSortOrder] = useState('newest');
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,17 +37,42 @@ const Projects = () => {
     fetchProjectsData();
   }, []);
 
-  const filteredProjects = projects.filter(project => {
-    const matchesCategory = selectedCategory === 'all' || 
-      project.category_slug === selectedCategory || 
-      String(project.category) === String(selectedCategory);
-      
-    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.technologies_used.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Derive unique years dynamically from projects' created_date values
+  const years = useMemo(() => {
+    const allYears = projects
+      .map(p => p.created_date ? p.created_date.split('-')[0] : null)
+      .filter(Boolean);
+    return [...new Set(allYears)].sort((a, b) => b - a);
+  }, [projects]);
 
-    return matchesCategory && matchesSearch;
-  });
+  // Filter projects by category, search query, status, and year
+  const filteredProjects = useMemo(() => {
+    return projects.filter(project => {
+      const matchesCategory = selectedCategory === 'all' || 
+        project.category_slug === selectedCategory || 
+        String(project.category) === String(selectedCategory);
+        
+      const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (project.technologies_used && project.technologies_used.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase())));
+
+      const matchesStatus = selectedStatus === 'all' || project.status === selectedStatus;
+
+      const projectYear = project.created_date ? project.created_date.split('-')[0] : '';
+      const matchesYear = selectedYear === 'all' || projectYear === selectedYear;
+
+      return matchesCategory && matchesSearch && matchesStatus && matchesYear;
+    });
+  }, [projects, selectedCategory, searchQuery, selectedStatus, selectedYear]);
+
+  // Sort filtered projects based on created_date
+  const sortedAndFilteredProjects = useMemo(() => {
+    return [...filteredProjects].sort((a, b) => {
+      const dateA = new Date(a.created_date || 0);
+      const dateB = new Date(b.created_date || 0);
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+  }, [filteredProjects, sortOrder]);
 
   if (loading) {
     return (
@@ -76,50 +104,78 @@ const Projects = () => {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Filters & Search Control */}
-        <section className="flex flex-col md:flex-row gap-6 justify-between items-center bg-white dark:bg-dark-900 p-4 rounded-2xl border border-slate-200/60 dark:border-dark-800/60 shadow-sm">
+        <section className="flex flex-col items-center gap-6 bg-white dark:bg-dark-900 p-6 rounded-2xl border border-slate-200/60 dark:border-dark-800/60 shadow-sm">
           {/* Search */}
-        <div className="relative w-full md:w-80">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search projects or tech..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-          />
-        </div>
+          <div className="relative w-full max-w-3xl">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search projects or tech..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+            />
+          </div>
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-2 justify-center w-full md:w-auto">
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              selectedCategory === 'all'
-                ? 'bg-primary-600 text-white shadow-md'
-                : 'bg-slate-100 dark:bg-dark-950 text-slate-650 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
-            }`}
-          >
-            All Projects
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                selectedCategory === cat.slug
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'bg-slate-100 dark:bg-dark-950 text-slate-650 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
-              }`}
-            >
-              {cat.name} ({cat.project_count})
-            </button>
-          ))}
-        </div>
-      </section>
+          {/* Status, Year, and Sort dropdowns */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl border-t border-slate-100 dark:border-dark-800 pt-6">
+            {/* Status (Type) Filter */}
+            <div className="flex flex-col gap-1.5 text-left">
+              <label className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
+                <SlidersHorizontal size={13} className="text-primary-500" />
+                Type
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer"
+              >
+                <option value="all">All Statuses</option>
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Planned">Planned</option>
+              </select>
+            </div>
+
+            {/* Date (Year) Filter */}
+            <div className="flex flex-col gap-1.5 text-left">
+              <label className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
+                <Calendar size={13} className="text-primary-500" />
+                Date (Year)
+              </label>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer"
+              >
+                <option value="all">All Years</option>
+                {years.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort Order */}
+            <div className="flex flex-col gap-1.5 text-left">
+              <label className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
+                <ArrowUpDown size={13} className="text-primary-500" />
+                Sort By
+              </label>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+          </div>
+        </section>
 
       {/* Projects Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProjects.map((project) => (
+        {sortedAndFilteredProjects.map((project) => (
           <motion.div
             layout
             key={project.id}
@@ -215,7 +271,7 @@ const Projects = () => {
             </div>
           </motion.div>
         ))}
-        {filteredProjects.length === 0 && (
+        {sortedAndFilteredProjects.length === 0 && (
           <div className="col-span-full py-16 text-center space-y-2">
             <Info className="mx-auto text-slate-400" size={32} />
             <p className="text-slate-500 dark:text-slate-400 font-semibold">No projects match your criteria.</p>

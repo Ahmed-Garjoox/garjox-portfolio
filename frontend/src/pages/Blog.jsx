@@ -83,27 +83,27 @@ const Blog = () => {
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Control Bar */}
-        <section className="flex flex-col md:flex-row gap-6 justify-between items-center bg-white dark:bg-dark-900 p-4 rounded-2xl border border-slate-200/60 dark:border-dark-800/60 shadow-sm">
+        <section className="flex flex-col items-center gap-6 bg-white dark:bg-dark-900 p-6 rounded-2xl border border-slate-200/60 dark:border-dark-800/60 shadow-sm">
           {/* Search */}
-          <div className="relative w-full md:w-80">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="relative w-full max-w-3xl">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-slate-50 dark:bg-dark-950 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
             />
           </div>
 
           {/* Categories */}
-          <div className="flex flex-wrap gap-2 justify-center w-full md:w-auto">
+          <div className="flex flex-wrap gap-2 justify-center w-full">
             <button
               onClick={() => setSelectedCategory('all')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedCategory === 'all'
                   ? 'bg-accent-600 text-white shadow-md'
-                  : 'bg-slate-100 dark:bg-dark-950 text-slate-650 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
+                  : 'bg-slate-100 dark:bg-dark-950 text-slate-655 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
               }`}
             >
               All Articles
@@ -115,7 +115,7 @@ const Blog = () => {
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                   selectedCategory === cat.slug
                     ? 'bg-accent-600 text-white shadow-md'
-                    : 'bg-slate-100 dark:bg-dark-950 text-slate-650 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
+                    : 'bg-slate-100 dark:bg-dark-950 text-slate-655 dark:text-slate-350 hover:bg-slate-200 dark:hover:bg-dark-850'
                 }`}
               >
                 {cat.name} ({cat.post_count})

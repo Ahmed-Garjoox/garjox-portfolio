@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+
 import { 
   LayoutDashboard, FileText, Database, Lightbulb, MessageSquare, 
   Settings, LogOut, Trash2, Edit2, Check, X, Shield, Plus, Eye, EyeOff, Award, User, Save,
-  GitBranch, Calendar, Code, Server, Users, Edit3, Home as HomeIcon, Mail
+  GitBranch, Calendar, Code, Server, Users, Edit3, Home as HomeIcon, Mail, ArrowLeft
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -15,7 +15,6 @@ const AdminDashboard = () => {
   // Data States
   const [stats, setStats] = useState(null);
   const [projects, setProjects] = useState([]);
-  const [research, setResearch] = useState([]);
   const [innovations, setInnovations] = useState([]);
   const [posts, setPosts] = useState([]);
   const [skills, setSkills] = useState([]);
@@ -44,13 +43,12 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [
-        statsRes, projectsRes, researchRes, 
+        statsRes, projectsRes, 
         postsRes, skillsRes, messagesRes, settingsRes,
         projectCatsRes, blogCatsRes, tagsRes, profileRes
       ] = await Promise.all([
         api.get('dashboard/stats/'),
         api.get('projects/'),
-        api.get('research/'),
         api.get('posts/'), // Admins see all posts via permission class
         api.get('skills/'),
         api.get('messages/'),
@@ -63,7 +61,6 @@ const AdminDashboard = () => {
 
       setStats(statsRes.data);
       setProjects(projectsRes.data.results || projectsRes.data);
-      setResearch(researchRes.data.results || researchRes.data);
       setPosts(postsRes.data.results || postsRes.data);
       setSkills(skillsRes.data.results || skillsRes.data);
       setMessages(messagesRes.data.results || messagesRes.data);
@@ -173,9 +170,6 @@ const AdminDashboard = () => {
       if (tabType === 'projects' && item.technologies_used) {
         copy.technologies_used = item.technologies_used.join(', ');
       }
-      if (tabType === 'research' && item.keywords) {
-        copy.keywords = item.keywords.join(', ');
-      }
       setFormData(copy);
     } else {
       // initialize empty
@@ -190,8 +184,6 @@ const AdminDashboard = () => {
         return { title: '', description: '', category: projectCats[0]?.id || '', status: 'In Progress', github_link: '', demo_link: '', documentation_url: '', case_study: '', is_featured: false, created_date: new Date().toISOString().split('T')[0] };
       case 'posts':
         return { title: '', content: '', category: blogCats[0]?.id || '', tags: [], status: 'Draft', reading_time: 5 };
-      case 'research':
-        return { title: '', abstract: '', research_type: 'Paper', keywords: '', methodology: '', findings: '', publication_date: new Date().toISOString().split('T')[0], citation: '' };
       case 'innovations':
         return { idea: '', problem: '', solution: '', prototype_url: '', impact: '', development_stage: 'Concept', future_plans: '' };
       case 'skills':
@@ -236,12 +228,6 @@ const AdminDashboard = () => {
           ? payload.technologies_used.split(',').map(s => s.trim()).filter(Boolean)
           : payload.technologies_used || [];
       }
-      if (activeTab === 'research') {
-        payload.keywords = typeof payload.keywords === 'string'
-          ? payload.keywords.split(',').map(s => s.trim()).filter(Boolean)
-          : payload.keywords || [];
-      }
-
       // Handle File uploads if present
       let requestConfig = {};
       let submitBody = payload;
@@ -311,77 +297,8 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {/* Dashboard Grid Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Sidebar Nav */}
-        <div className="lg:col-span-3 space-y-2">
-          <div className="bg-white dark:bg-dark-900/60 p-4 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-1.5">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'overview'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <LayoutDashboard size={16} /> Overview Stats
-            </button>
-            <button
-              onClick={() => setActiveTab('projects')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'projects'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <Database size={16} /> Portfolio Projects
-            </button>
-            <button
-              onClick={() => setActiveTab('posts')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'posts'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <FileText size={16} /> Articles & Blog
-            </button>
-            <button
-              onClick={() => setActiveTab('research')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'research'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <Award size={16} /> Research Records
-            </button>
-
-            <button
-              onClick={() => setActiveTab('messages')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'messages'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <MessageSquare size={16} /> Message Inbox
-            </button>
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`flex items-center gap-2.5 w-full px-4 py-3 text-sm font-bold rounded-xl transition-all ${
-                activeTab === 'profile'
-                  ? 'bg-primary-600 text-white shadow-md'
-                  : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-dark-950/50'
-              }`}
-            >
-              <User size={16} /> My Profile
-            </button>
-          </div>
-        </div>
-
-        {/* Content Panel Area */}
-        <div className="lg:col-span-9 space-y-6">
+      {/* Dashboard Workspace */}
+      <div className="space-y-6">
           {/* OVERVIEW STATS TAB */}
           {activeTab === 'overview' && stats && (
             <div className="space-y-10">
@@ -453,145 +370,96 @@ const AdminDashboard = () => {
               {/* Grid of Action Buttons */}
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {/* Action 1: Add Project */}
-                  <button 
-                    onClick={() => openForm('projects')}
-                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
-                  >
-                    <Plus size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Add Project</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Create new project</span>
-                  </button>
-
-                  {/* Action 2: Manage Projects */}
+                  {/* Action 1: Manage Projects */}
                   <button 
                     onClick={() => setActiveTab('projects')}
                     className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
                   >
-                    <Settings size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Manage Projects</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Edit or delete projects</span>
+                    <Database size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Portfolio Projects</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Add, edit, or delete projects</span>
                   </button>
 
-                  {/* Action 3: Manage Admins */}
-                  <a 
-                    href="http://localhost:8000/admin/auth/user/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
-                  >
-                    <Users size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Manage Admins</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Add users & passwords</span>
-                  </a>
-
-                  {/* Action 4: Edit About */}
-                  <button 
-                    onClick={() => setActiveTab('profile')}
-                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
-                  >
-                    <Edit3 size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Edit About</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Update personal info</span>
-                  </button>
-
-                  {/* Action 5: Edit Home Page */}
-                  <button 
-                    onClick={() => setActiveTab('profile')}
-                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
-                  >
-                    <HomeIcon size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Edit Home Page</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Update homepage content</span>
-                  </button>
-
-                  {/* Action 6: Manage Posts */}
+                  {/* Action 2: Manage Posts */}
                   <button 
                     onClick={() => setActiveTab('posts')}
                     className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
                   >
                     <FileText size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Manage Posts</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Create blog posts</span>
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Articles & Blog</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Write and publish blog posts</span>
                   </button>
 
-                  {/* Action 7: View Messages */}
+
+                  {/* Action 4: Manage Skills */}
+                  <button 
+                    onClick={() => setActiveTab('skills')}
+                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
+                  >
+                    <Code size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Professional Skills</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Configure capability percentages</span>
+                  </button>
+
+                  {/* Action 5: View Messages */}
                   <button 
                     onClick={() => setActiveTab('messages')}
                     className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
                   >
                     <Mail size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">View Messages</span>
-                    <span className="text-[11px] text-slate-400 block font-normal">Check contact form submissions</span>
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">Message Inbox</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Check contact submissions</span>
                   </button>
+
+                  {/* Action 6: Edit Profile */}
+                  <button 
+                    onClick={() => setActiveTab('profile')}
+                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
+                  >
+                    <User size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">My Profile</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Update public profile info</span>
+                  </button>
+
+                  {/* Action 7: System Settings */}
+                  <button 
+                    onClick={() => setActiveTab('settings')}
+                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
+                  >
+                    <Settings size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">System Settings</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Configure global app settings</span>
+                  </button>
+
+                  {/* Action 8: Manage User Accounts (Django Admin) */}
+                  <a 
+                    href="http://localhost:8001/admin/auth/user/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-white dark:bg-dark-900 shadow-sm hover:shadow-md border border-slate-200/50 dark:border-dark-800/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-2 hover:scale-[1.02] active:scale-[0.98] transition-all group min-h-[140px]"
+                  >
+                    <Users size={28} className="text-[#1d4ed8] dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm block">User Accounts</span>
+                    <span className="text-[11px] text-slate-400 block font-normal">Manage admin users in Django</span>
+                  </a>
                 </div>
               </div>
 
-              {/* Traffic Chart */}
-              {stats.monthlyViews && stats.monthlyViews.length > 0 && (
-                <div className="bg-white dark:bg-dark-900 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-4 text-left">
-                  <h3 className="font-display font-extrabold text-lg text-slate-900 dark:text-white">Monthly Page Views</h3>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={stats.monthlyViews}>
-                        <defs>
-                          <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4}/>
-                            <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b15" />
-                        <XAxis dataKey="name" stroke="#888" fontSize={11} />
-                        <YAxis stroke="#888" fontSize={11} />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="views" stroke="#0ea5e9" strokeWidth={2} fillOpacity={1} fill="url(#colorViews)" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              )}
 
-              {/* Split Category Counts Charts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                {stats.projectsByCategory && (
-                  <div className="bg-white dark:bg-dark-900 p-5 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-4">
-                    <h4 className="font-display font-extrabold text-slate-900 dark:text-white text-sm">Projects per Category</h4>
-                    <div className="h-48">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={stats.projectsByCategory}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                          <XAxis dataKey="name" fontSize={10} stroke="#999" />
-                          <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                )}
-                {stats.articlesByCategory && (
-                  <div className="bg-white dark:bg-dark-900 p-5 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-4">
-                    <h4 className="font-display font-extrabold text-slate-900 dark:text-white text-sm">Articles per Category</h4>
-                    <div className="h-48">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={stats.articlesByCategory}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                          <XAxis dataKey="name" fontSize={10} stroke="#999" />
-                          <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           )}
 
           {/* PROFILE MANAGEMENT PANEL */}
           {activeTab === 'profile' && (
-            <div className="bg-white dark:bg-dark-900/60 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-6">
+            <div className="space-y-4">
+              <button
+                onClick={() => setActiveTab('overview')}
+                className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-sm font-bold transition-colors"
+              >
+                <ArrowLeft size={16} /> Back to Dashboard
+              </button>
+
+              <div className="bg-white dark:bg-dark-900/60 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-6">
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-dark-850 pb-4">
                 <div>
                   <span className="text-xs font-bold text-primary-500 uppercase tracking-widest flex items-center gap-1"><User size={13} /> My Profile</span>
@@ -677,11 +545,20 @@ const AdminDashboard = () => {
                 </div>
               </form>
             </div>
+            </div>
           )}
 
           {/* CRUD PANELS */}
           {activeTab !== 'overview' && activeTab !== 'profile' && (
-            <div className="bg-white dark:bg-dark-900/60 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-6">
+            <div className="space-y-4">
+              <button
+                onClick={() => setActiveTab('overview')}
+                className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-sm font-bold transition-colors"
+              >
+                <ArrowLeft size={16} /> Back to Dashboard
+              </button>
+
+              <div className="bg-white dark:bg-dark-900/60 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/50 space-y-6">
               
               {/* Header inside Panel */}
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-dark-850 pb-4">
@@ -768,34 +645,6 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* RESEARCH CRUD LIST */}
-              {activeTab === 'research' && (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead>
-                      <tr className="border-b border-slate-100 dark:border-dark-850 text-slate-450 text-xs font-extrabold uppercase">
-                        <th className="pb-3">Paper Title</th>
-                        <th className="pb-3">Type</th>
-                        <th className="pb-3">Published Date</th>
-                        <th className="pb-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-dark-850">
-                      {research.map((paper) => (
-                        <tr key={paper.id} className="hover:bg-slate-50/20 dark:hover:bg-dark-900/10">
-                          <td className="py-3 font-semibold text-slate-900 dark:text-white max-w-sm truncate">{paper.title}</td>
-                          <td className="py-3 text-slate-500">{paper.research_type}</td>
-                          <td className="py-3 text-slate-500">{paper.publication_date}</td>
-                          <td className="py-3 text-right space-x-2">
-                            <button onClick={() => openForm('research', paper)} className="p-1 hover:text-primary-500 transition-colors"><Edit2 size={14} /></button>
-                            <button onClick={() => handleDeleteItem('research', paper.id)} className="p-1 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
 
 
 
@@ -906,9 +755,9 @@ const AdminDashboard = () => {
               )}
 
             </div>
+            </div>
           )}
 
-        </div>
       </div>
 
       {/* OVERLAY POPUP FORMS (CREATE / EDIT) */}
@@ -1059,51 +908,6 @@ const AdminDashboard = () => {
                 </>
               )}
 
-              {/* RESEARCH FORM */}
-              {activeTab === 'research' && (
-                <>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-400">Title</label>
-                    <input type="text" name="title" value={formData.title || ''} onChange={handleInputChange} required className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-400">Research Type</label>
-                      <select name="research_type" value={formData.research_type || ''} onChange={handleInputChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950">
-                        <option value="Paper">Paper</option>
-                        <option value="Journal">Journal</option>
-                        <option value="Patent">Patent</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-400">Keywords (Comma separated)</label>
-                      <input type="text" name="keywords" value={formData.keywords || ''} onChange={handleInputChange} placeholder="Query Planning, Latency" className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-400">Publication Date</label>
-                      <input type="date" name="publication_date" value={formData.publication_date || ''} onChange={handleInputChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950" />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-400">Abstract</label>
-                    <textarea name="abstract" value={formData.abstract || ''} onChange={handleInputChange} required rows={3} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950 resize-none" />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-400">Methodology</label>
-                      <textarea name="methodology" value={formData.methodology || ''} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950 resize-none" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-400">Findings</label>
-                      <textarea name="findings" value={formData.findings || ''} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950 resize-none" />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-400">Standard Citation Text</label>
-                    <input type="text" name="citation" value={formData.citation || ''} onChange={handleInputChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950" />
-                  </div>
-                </>
-              )}
 
 
 
@@ -1125,7 +929,6 @@ const AdminDashboard = () => {
                     <select name="category" value={formData.category || 'Development'} onChange={handleInputChange} className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-dark-850 dark:bg-dark-950">
                       <option value="Database">Database</option>
                       <option value="Development">Development</option>
-                      <option value="Research">Research</option>
                       <option value="Leadership">Leadership</option>
                       <option value="Other">Other</option>
                     </select>

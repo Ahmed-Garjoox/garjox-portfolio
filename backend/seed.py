@@ -33,26 +33,25 @@ def seed_data():
     profile = admin_user.profile
     profile.name = "Ahmed Mahamud Ahmed"
     profile.biography = (
-        "Experienced Database Administrator, Researcher, and Software Developer with a demonstrated history "
-        "of designing robust data infrastructures, translating academic theories into functional software pipelines, "
-        "and driving innovations in high-performance computing and complex systems."
+      "Experienced Database Administrator and Software Developer with a demonstrated history "
+      "of designing robust data infrastructures, translating complex data models into functional software pipelines, "
+      "and driving innovations in high-performance computing and complex systems."
     )
     profile.education = (
-        "Bachelor of Science in Computer Science & Information Systems\n"
-        "Master of Science in Database Systems and Advanced Computing Technologies"
+      "Bachelor of Science in Computer Science & Information Systems\n"
+      "Master of Science in Database Systems"
     )
     profile.journey = (
-        "Began as a software engineer focus on frontend applications before diving deep into backend development "
-        "and SQL performance optimization. Over the last 5 years, expanded into academic research and engineering "
-        "architectures for complex databases."
+      "Began as a software engineer focus on frontend applications before diving deep into backend development "
+      "and SQL performance optimization. Over the last 5 years, expanded into engineering architectures for complex databases."
     )
     profile.goals = (
-        "To engineer scalable database solutions, conduct meaningful computational research, "
-        "and build open-source tools that solve accessibility challenges globally."
+      "To engineer scalable database solutions, design analytical dashboards, "
+      "and build open-source tools that solve accessibility challenges globally."
     )
     profile.vision = (
-        "Bridge the gap between theoretical computer science and industrial database administration, "
-        "creating seamless developer experiences through robust cloud structures."
+      "Bridge the gap between computer science theory and industrial database administration, "
+      "creating seamless developer experiences through robust cloud structures."
     )
     profile.save()
     print("Profile updated.")

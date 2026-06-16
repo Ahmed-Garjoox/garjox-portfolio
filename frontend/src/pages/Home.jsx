@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Database, FileText, Lightbulb, MessageSquare, ArrowRight, Award, Mail } from 'lucide-react';
+import { Database, FileText, Lightbulb, MessageSquare, ArrowRight, Award, Mail, BarChart2 } from 'lucide-react';
 import { Github, Linkedin } from '../components/SocialIcons';
 import api from '../services/api';
 
@@ -13,7 +13,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   // Typing effect state
-  const roles = ["Database Administrator", "Academic Researcher", "Software Developer", "Database Engineer"];
+  const roles = ["Database Administrator", "Software Developer", "Database Engineer", "Data Analyst"];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -146,10 +146,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Core Specialties Cards */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4">
+          <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4 text-left">
             <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 flex items-center justify-center">
               <Database size={24} />
             </div>
@@ -158,13 +157,13 @@ const Home = () => {
               Specialized in query plan tuning, connection pooling optimization, indexing heuristics, and sharded environments.
             </p>
           </div>
-          <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4">
+          <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4 text-left">
             <div className="w-12 h-12 rounded-xl bg-accent-100 dark:bg-accent-950/50 text-accent-600 dark:text-accent-400 flex items-center justify-center">
-              <FileText size={24} />
+              <BarChart2 size={24} />
             </div>
-            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Academic Research</h3>
+            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Data Analysis & BI</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Formulating mathematical models for consensus algorithms, security policies under quantum limits, and distributed clusters.
+              Transforming raw data into actionable insights, building analytical dashboards, and implementing ETL pipelines.
             </p>
           </div>
         </div>
@@ -226,79 +225,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Publications / Innovations Split Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Recent Research */}
-        <div className="space-y-6 text-left">
-          <div className="flex justify-between items-end border-b border-slate-200/50 dark:border-dark-800/50 pb-4">
-            <div>
-              <span className="text-xs font-bold text-primary-500 uppercase tracking-widest">Academic Science</span>
-              <h2 className="text-2xl font-display font-bold text-slate-900 dark:text-white mt-1">Research Publications</h2>
-            </div>
-            <Link to="/research" className="flex items-center gap-1.5 text-xs font-semibold text-primary-500 hover:text-primary-600">
-              All Research <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {recentResearch.map((paper) => (
-              <div
-                key={paper.id}
-                className="p-6 rounded-2xl bg-white dark:bg-dark-900/40 border border-slate-150 dark:border-dark-800/40 hover:border-primary-400/50 dark:hover:border-primary-500/30 transition-all space-y-2"
-              >
-                <div className="flex justify-between items-start">
-                  <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-dark-800 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    {paper.research_type}
-                  </span>
-                  <span className="text-xs text-slate-400">{paper.publication_date}</span>
-                </div>
-                <h3 className="font-display font-bold text-base text-slate-900 dark:text-white leading-snug">
-                  {paper.title}
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-                  {paper.abstract}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Recent Blog Posts */}
-        <div className="space-y-6 text-left">
-          <div className="flex justify-between items-end border-b border-slate-200/50 dark:border-dark-800/50 pb-4">
-            <div>
-              <span className="text-xs font-bold text-accent-500 uppercase tracking-widest">Knowledge Share</span>
-              <h2 className="text-2xl font-display font-bold text-slate-900 dark:text-white mt-1">Latest Articles</h2>
-            </div>
-            <Link to="/blog" className="flex items-center gap-1.5 text-xs font-semibold text-accent-500 hover:text-accent-600">
-              Read Blog <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {recentPosts.map((post) => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.id}`}
-                className="block p-6 rounded-2xl bg-white dark:bg-dark-900/40 border border-slate-150 dark:border-dark-800/40 hover:border-accent-400/50 dark:hover:border-accent-500/30 transition-all space-y-2"
-              >
-                <div className="flex justify-between items-start">
-                  <span className="px-2 py-0.5 rounded bg-accent-50 dark:bg-accent-950/20 text-xs font-medium text-accent-600 dark:text-accent-400">
-                    {post.category_name}
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    {new Date(post.published_date || post.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <h3 className="font-display font-bold text-base text-slate-900 dark:text-white leading-snug">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Estimated read time: {post.reading_time} mins
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Visual Block */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -53,6 +53,7 @@ def seed_data():
         "Bridge the gap between computer science theory, academic research, and public administration, "
         "creating seamless digital systems that serve as the foundation for institutional reform."
     )
+    profile.profile_image = "profile/WhatsApp_Image_2026-03-21_at_14.51.43.jpeg"
     profile.save()
     print("Profile updated.")
 
@@ -126,7 +127,9 @@ def seed_data():
         Skill.objects.create(name=name, proficiency_percentage=percentage, category=category)
     print("Skills created.")
 
-    # 5. Create Projects
+    # 5. Create Projects (Clear old projects first to apply cover images)
+    Project.objects.all().delete()
+    
     projects_list = [
         {
             "title": "Enterprise SQL Tuner & Performance Monitor",
@@ -135,6 +138,7 @@ def seed_data():
             "status": "Completed",
             "technologies_used": ["Python", "PostgreSQL", "SQL Server", "React"],
             "github_link": "https://github.com/ahmed/sql-tuner",
+            "cover_image": "projects/sql_tuner.png",
             "is_featured": True,
             "created_date": date.today() - timedelta(days=60),
             "case_study": "### Challenge\nDevelopers write complex SQL queries that lock rows and slow down API performance in high-traffic applications.\n\n### Solution\nWe created an engine using SQLParse and query explain plans to suggest optimized indexes and highlight problematic cross-joins.\n\n### Results\nSuccessfully reduced database lock-ups by 45% in production tests."
@@ -146,6 +150,7 @@ def seed_data():
             "status": "In Progress",
             "technologies_used": ["Python", "Django", "React"],
             "github_link": "https://github.com/ahmed/quantum-ledger",
+            "cover_image": "projects/quantum_blockchain.png",
             "is_featured": True,
             "created_date": date.today() - timedelta(days=30),
             "case_study": "Exploring quantum secure computing modules within server-client transactions."
@@ -157,13 +162,14 @@ def seed_data():
             "status": "Completed",
             "technologies_used": ["React", "Django", "PostgreSQL", "Redis"],
             "github_link": "https://github.com/ahmed/fast-dashboard",
+            "cover_image": "projects/analytics_dashboard.png",
             "is_featured": False,
             "created_date": date.today() - timedelta(days=90),
             "case_study": "Demonstrating lightning-fast loading of massive records."
         }
     ]
     for proj in projects_list:
-        Project.objects.get_or_create(title=proj["title"], defaults=proj)
+        Project.objects.create(**proj)
     print("Projects seeded.")
 
     # 6. Create Research Papers
@@ -233,7 +239,9 @@ def seed_data():
         tag_objs[tag_name] = obj
     print("Blog categories and tags created.")
 
-    # 9. Create Blog Posts
+    # 9. Create Blog Posts (Clear old posts first to apply featured images)
+    Post.objects.all().delete()
+    
     posts_list = [
         {
             "title": "Why I Migrated My Main Projects to PostgreSQL",
@@ -242,6 +250,7 @@ def seed_data():
             "status": "Published",
             "reading_time": 4,
             "published_date": timezone.now() - timedelta(days=10),
+            "featured_image": "blog/WhatsApp_Image_2026-01-23_at_14.47.20.jpeg"
         },
         {
             "title": "A Guide to Framer Motion Animations in React",
@@ -250,22 +259,21 @@ def seed_data():
             "status": "Published",
             "reading_time": 6,
             "published_date": timezone.now() - timedelta(days=5),
+            "featured_image": ""
         }
     ]
     for idx, post in enumerate(posts_list):
-        p_obj, created = Post.objects.get_or_create(
+        p_obj = Post.objects.create(
             title=post["title"],
-            defaults={
-                "author": admin_user,
-                "category": post["category"],
-                "content": post["content"],
-                "status": post["status"],
-                "reading_time": post["reading_time"],
-                "published_date": post["published_date"],
-            }
+            author=admin_user,
+            category=post["category"],
+            content=post["content"],
+            status=post["status"],
+            reading_time=post["reading_time"],
+            published_date=post["published_date"],
+            featured_image=post["featured_image"]
         )
-        if created:
-            p_obj.tags.add(tag_objs["PostgreSQL" if idx == 0 else "React"])
+        p_obj.tags.add(tag_objs["PostgreSQL" if idx == 0 else "React"])
     print("Blog posts seeded.")
 
     # 10. Seed Analytics / Contact messages for charts

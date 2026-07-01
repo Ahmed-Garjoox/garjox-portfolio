@@ -33,25 +33,25 @@ def seed_data():
     profile = admin_user.profile
     profile.name = "Ahmed Mahamud Ahmed"
     profile.biography = (
-      "Experienced Database Administrator and Software Developer with a demonstrated history "
-      "of designing robust data infrastructures, translating complex data models into functional software pipelines, "
-      "and driving innovations in high-performance computing and complex systems."
+        "Executive Director of Mudug Insight Research Center (MIRC) with expertise spanning technology, "
+        "research, governance, and executive leadership. I specialize in bridging innovation with evidence-based "
+        "decision-making and institutional development to contribute to sustainable development and public sector transformation."
     )
     profile.education = (
-      "Bachelor of Science in Computer Science & Information Systems\n"
-      "Master of Science in Database Systems"
+        "Master of Science in Database Systems\n"
+        "Bachelor of Science in Computer Science & Information Systems"
     )
     profile.journey = (
-      "Began as a software engineer focus on frontend applications before diving deep into backend development "
-      "and SQL performance optimization. Over the last 5 years, expanded into engineering architectures for complex databases."
+        "Began in software development and database design before expanding into public administration, research leadership, "
+        "and policy analysis. Led MIRC to collaborate on sustainable development, capacity building, and digital governance initiatives."
     )
     profile.goals = (
-      "To engineer scalable database solutions, design analytical dashboards, "
-      "and build open-source tools that solve accessibility challenges globally."
+        "To deliver innovative, ethical, and data-driven solutions that strengthen institutions, "
+        "improve governance, advance research excellence, and accelerate digital transformation across the public, private, and development sectors."
     )
     profile.vision = (
-      "Bridge the gap between computer science theory and industrial database administration, "
-      "creating seamless developer experiences through robust cloud structures."
+        "Bridge the gap between computer science theory, academic research, and public administration, "
+        "creating seamless digital systems that serve as the foundation for institutional reform."
     )
     profile.save()
     print("Profile updated.")
@@ -67,28 +67,63 @@ def seed_data():
         cat_objs[cat_name] = obj
     print("Project categories created.")
 
-    # 4. Create Skills
+    # 4. Create Skills (Clear old skills first)
+    Skill.objects.all().delete()
+    
     skills_data = [
-        # Database
-        ("PostgreSQL", 95, "Database"),
-        ("MySQL", 90, "Database"),
-        ("SQL Server", 85, "Database"),
-        # Development
-        ("React", 90, "Development"),
-        ("Django", 92, "Development"),
-        ("JavaScript", 95, "Development"),
-        ("Python", 93, "Development"),
-        # Research
-        ("Academic Research", 88, "Research"),
-        ("Data Analysis", 85, "Research"),
-        ("Technical Writing", 90, "Research"),
-        # Leadership & Communication
-        ("Problem Solving", 95, "Leadership"),
-        ("Communication", 90, "Leadership"),
-        ("Other", 80, "Other"),
+        # Governance, Leadership & Public Policy (Category: Leadership)
+        ("Executive Leadership", 95, "Leadership"),
+        ("Strategic Management", 93, "Leadership"),
+        ("Public Administration", 90, "Leadership"),
+        ("Governance & Public Sector Reform", 88, "Leadership"),
+        ("Public Policy Analysis", 90, "Leadership"),
+        ("Institutional Development", 92, "Leadership"),
+        ("Organizational Capacity Building", 90, "Leadership"),
+        ("Human Resource Management", 85, "Leadership"),
+        ("Financial Management", 85, "Leadership"),
+        ("Monitoring, Evaluation, Accountability & Learning (MEAL)", 91, "Leadership"),
+        ("Project & Program Management", 92, "Leadership"),
+        ("Stakeholder Engagement", 90, "Leadership"),
+        ("Risk Management", 88, "Leadership"),
+        ("International Relations", 85, "Leadership"),
+        ("Sustainable Development Goals (SDGs)", 90, "Leadership"),
+
+        # Research & Analytics (Category: Research)
+        ("Policy Research", 92, "Research"),
+        ("Quantitative & Qualitative Research", 94, "Research"),
+        ("Mixed Methods Research", 92, "Research"),
+        ("Research Methodology", 93, "Research"),
+        ("Statistical Analysis", 90, "Research"),
+        ("Data Analysis", 95, "Research"),
+        ("Monitoring & Evaluation (M&E)", 92, "Research"),
+        ("Impact Assessment", 90, "Research"),
+        ("Needs Assessment", 90, "Research"),
+        ("Survey Design", 91, "Research"),
+        ("Data Collection & Interpretation", 93, "Research"),
+        ("Technical Report Writing", 94, "Research"),
+        ("Evidence-Based Decision Making", 95, "Research"),
+
+        # Technology & Digital Innovation (Category: Database / Development / Other)
+        ("Computer Science", 92, "Development"),
+        ("Database Administration (DBA)", 95, "Database"),
+        ("Database Design & Management", 95, "Database"),
+        ("SQL & Data Management", 95, "Database"),
+        ("Data Analytics", 94, "Database"),
+        ("Business Intelligence", 92, "Database"),
+        ("Artificial Intelligence Fundamentals", 85, "Development"),
+        ("Digital Transformation", 92, "Development"),
+        ("Information Systems", 92, "Development"),
+        ("Web Application Development", 90, "Development"),
+        ("API Integration", 91, "Development"),
+        ("Cybersecurity Fundamentals", 85, "Development"),
+        ("Cloud Computing Fundamentals", 86, "Development"),
+        ("Microsoft Excel (Advanced)", 95, "Other"),
+        ("Microsoft Word", 95, "Other"),
+        ("Microsoft PowerPoint", 92, "Other"),
+        ("Microsoft Office Suite", 95, "Other"),
     ]
     for name, percentage, category in skills_data:
-        Skill.objects.get_or_create(name=name, defaults={"proficiency_percentage": percentage, "category": category})
+        Skill.objects.create(name=name, proficiency_percentage=percentage, category=category)
     print("Skills created.")
 
     # 5. Create Projects

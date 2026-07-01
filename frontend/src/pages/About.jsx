@@ -52,13 +52,13 @@ const About = () => {
                 HELLO, I'M
               </span>
               <h1 className="text-5xl lg:text-6xl font-display font-extrabold text-white leading-tight uppercase">
-                AHMED GARJOOX
+                {profile.name || "AHMED MAHAMUD AHMED"}
               </h1>
               <h2 className="text-xl lg:text-2xl font-bold text-blue-100 leading-snug">
-                Passionate database professional with expertise in data analysis and business intelligence
+                Executive Director of Mudug Insight Research Center (MIRC)
               </h2>
-              <p className="text-base text-blue-105 leading-relaxed">
-                I am a dedicated database and data analysis professional with over 10 years of experience in designing, implementing, and optimizing database solutions that drive business success. My expertise spans across the entire data lifecycle - from database architecture and design to complex SQL development, ETL processes, and advanced analytics. I specialize in creating efficient, scalable database systems that serve as the foundation for data-driven decision making.
+              <p className="text-base text-blue-100 leading-relaxed">
+                {profile.biography}
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link
@@ -115,7 +115,7 @@ const About = () => {
               <div className="space-y-1">
                 <h2 className="font-display font-bold text-xl text-slate-900 dark:text-white">{profile.name || "Ahmed Garjoox"}</h2>
                 <p className="text-sm text-primary-500 dark:text-primary-400 font-semibold uppercase tracking-wider">
-                  Database Engineer & Data Analyst
+                  Executive Director of MIRC
                 </p>
               </div>
 
@@ -162,6 +162,14 @@ const About = () => {
                 <p className="text-slate-600 dark:text-slate-350 leading-relaxed">
                   {profile.biography}
                 </p>
+                {profile.journey && (
+                  <div className="mt-6 space-y-3">
+                    <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white">Professional Journey</h3>
+                    <p className="text-slate-600 dark:text-slate-350 leading-relaxed">
+                      {profile.journey}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

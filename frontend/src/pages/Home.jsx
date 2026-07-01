@@ -13,7 +13,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   // Typing effect state
-  const roles = ["Database Administrator", "Software Developer", "Database Engineer", "Data Analyst"];
+  const roles = ["Executive Director of MIRC", "Technology & Innovation Leader", "Governance & Public Policy Analyst", "Database Engineer & DBA"];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -95,13 +95,13 @@ const Home = () => {
             {/* Hero Content */}
             <div className="lg:col-span-7 space-y-6 text-left">
               <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 text-white border border-white/20 text-xs font-bold uppercase tracking-wider">
-                DATABASE & DATA ANALYSIS EXPERT
+                Technology, Research & Governance Leader
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-white leading-tight">
-                Turning Data Into Actionable Insights
+                Bridging Innovation With Evidence-Based Decisions
               </h1>
-              <p className="text-lg text-blue-105 max-w-2xl leading-relaxed">
-                Specializing in advanced database design, SQL optimization, ETL pipelines, and comprehensive data analytics solutions that drive real business value.
+              <p className="text-lg text-blue-100 max-w-2xl leading-relaxed">
+                Executive Director of Mudug Insight Research Center (MIRC), leading strategic research, institutional capacity building, and digital transformation.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link
@@ -136,9 +136,9 @@ const Home = () => {
                   </div>
                 )}
                 {/* Overlay Badge */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-white text-slate-805 rounded-full shadow-lg border border-slate-100 flex items-center gap-2 text-sm font-bold text-slate-800">
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-white text-slate-800 dark:bg-dark-900 rounded-full shadow-lg border border-slate-100 dark:border-dark-800 flex items-center gap-2 text-sm font-bold">
                   <Database size={16} className="text-[#1d4ed8] fill-current" />
-                  <span>Data Expert</span>
+                  <span>MIRC Director</span>
                 </div>
               </div>
             </div>
@@ -147,23 +147,32 @@ const Home = () => {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 flex items-center justify-center">
-              <Database size={24} />
+            <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <Award size={24} />
             </div>
-            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Database Administration</h3>
+            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Governance & Leadership</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Specialized in query plan tuning, connection pooling optimization, indexing heuristics, and sharded environments.
+              Executive leadership, public sector reform, administrative design, MEAL frameworks, and sustainable development alignment (SDGs).
             </p>
           </div>
           <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4 text-left">
-            <div className="w-12 h-12 rounded-xl bg-accent-100 dark:bg-accent-950/50 text-accent-600 dark:text-accent-400 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <BarChart2 size={24} />
             </div>
-            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Data Analysis & BI</h3>
+            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Research & Analytics</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Transforming raw data into actionable insights, building analytical dashboards, and implementing ETL pipelines.
+              Quantitative, qualitative, and mixed-method policy research, statistical analyses, impact evaluations, and survey methodologies.
+            </p>
+          </div>
+          <div className="p-8 rounded-2xl glass-card border border-slate-200/50 dark:border-dark-800/50 hover:shadow-lg transition-all space-y-4 text-left">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <Database size={24} />
+            </div>
+            <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">Technology & Innovation</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Enterprise database design (DBA), SQL architecture, web application development, and systems engineering for digital transformation.
             </p>
           </div>
         </div>
@@ -232,9 +241,9 @@ const Home = () => {
         <div className="relative overflow-hidden rounded-3xl gradient-bg p-8 sm:p-12 text-center text-white space-y-6 shadow-xl">
           <div className="absolute top-0 left-0 w-full h-full bg-slate-900/10 dark:bg-slate-900/30 backdrop-blur-[1px]"></div>
           <div className="relative z-10 space-y-4 max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-display font-extrabold">Have a complex database query that needs tuning?</h2>
+            <h2 className="text-3xl sm:text-4xl font-display font-extrabold">Looking for Research Collaboration or Consulting?</h2>
             <p className="text-base text-sky-100">
-              Or looking to collaborate on high-throughput computation systems and custom sharded structures? Let's connect and build a solution.
+              Let's connect to build evidence-based solutions, guide digital policy transformations, or engineer robust institutional data systems.
             </p>
             <div className="pt-4 flex justify-center gap-4">
               <Link

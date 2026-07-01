@@ -14,6 +14,7 @@ import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import Skills from './pages/Skills';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -41,6 +42,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/expertise" element={<Skills />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />
